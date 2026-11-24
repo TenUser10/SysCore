@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SysCore (.sc) - Official Download</title>
+<link rel="icon" type="image/svg+xml" href="SysCore logo.svg">
 <style>
   :root {
     --bg: #0b0e14;
@@ -40,11 +41,21 @@
     margin-bottom: 36px;
   }
   .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     font-family: var(--mono);
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--accent);
     letter-spacing: 0.5px;
+  }
+  .logo img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    border-radius: 4px;
   }
   .logo span {
     color: var(--text);
@@ -209,7 +220,10 @@
 <body>
 <div class="container">
   <header>
-    <div class="logo">&gt;_ SysCore<span>.sc</span></div>
+    <div class="logo">
+      <img src="SysCore logo.svg" alt="SysCore Logo">
+      SysCore<span>.sc</span>
+    </div>
     <div class="badge">v1.0 • Windows x64</div>
   </header>
 
