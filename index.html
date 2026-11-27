@@ -118,6 +118,11 @@
     color: var(--accent);
     border: 1px solid var(--accent);
   }
+  .btn-donate {
+    background: rgba(255, 209, 102, 0.12);
+    color: #ffd166;
+    border: 1px solid #ffd166;
+  }
   .btn-secondary {
     background: transparent;
     color: var(--text);
@@ -222,6 +227,70 @@
     border-radius: 4px;
     color: var(--accent);
   }
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 999;
+  }
+  .modal-backdrop.open {
+    display: flex;
+  }
+  .modal-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    max-width: 440px;
+    width: 100%;
+    padding: 24px;
+  }
+  .modal-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .modal-top h3 {
+    font-family: var(--mono);
+    color: #ffd166;
+    font-size: 1.1rem;
+  }
+  .close-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .close-btn:hover {
+    color: var(--text);
+  }
+  .modal-box p {
+    color: var(--muted);
+    font-size: 0.93rem;
+    margin-bottom: 16px;
+  }
+  .donate-box {
+    background: #07090d;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--text);
+    margin-bottom: 16px;
+    word-break: break-all;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
   footer {
     text-align: center;
     color: var(--muted);
@@ -254,6 +323,9 @@
       <a class="btn btn-os" href="https://github.com/TenUser10/SysCore/releases/latest/download/SysCore-Linux.zip" download>
         Download for Linux (.zip)
       </a>
+      <button class="btn btn-donate" type="button" onclick="openDonate()">
+        Donate
+      </button>
       <a class="btn btn-secondary" href="https://github.com/TenUser10/SysCore" target="_blank" rel="noopener">
         View Source on GitHub
       </a>
@@ -302,7 +374,7 @@
     <div class="terminal">
       <div class="terminal-header">
         <span>demo.sc</span>
-        <button class="copy-btn" onclick="copySample()">Copy Code</button>
+        <button class="copy-btn" type="button" onclick="copySample()">Copy Code</button>
       </div>
       <pre id="sampleCode"><span class="kw">create</span> (<span class="str">"=== Welcome to SysCore ==="</span>) <span class="kw">text</span>
 <span class="kw">let</span> user = <span class="fn">ask</span>(<span class="str">"Enter your name: "</span>)
@@ -318,13 +390,56 @@
   </footer>
 </div>
 
+<div class="modal-backdrop" id="donateModal" onclick="backdropClose(event)">
+  <div class="modal-box">
+    <div class="modal-top">
+      <h3>Support SysCore</h3>
+      <button class="close-btn" type="button" onclick="closeDonate()">X</button>
+    </div>
+    <p>SysCore is free to download and use. If you enjoy the project and want to support development, use the link below:</p>
+    <div class="donate-box" id="donateInfo">https://buymeacoffee.com/tenuser10</div>
+    <div class="modal-actions">
+      <a class="btn btn-primary" id="donateLink" href="https://buymeacoffee.com/tenuser10" target="_blank" rel="noopener">Open Buy Me a Coffee</a>
+      <button class="btn btn-secondary" type="button" id="copyDonateBtn" onclick="copyDonate()">Copy Link</button>
+    </div>
+  </div>
+</div>
+
 <script>
+const DONATE_URL = "https://buymeacoffee.com/tenuser10";
+const DONATE_TEXT = "https://buymeacoffee.com/tenuser10";
+
+document.getElementById("donateLink").href = DONATE_URL;
+document.getElementById("donateInfo").innerText = DONATE_TEXT;
+
+function openDonate() {
+  document.getElementById("donateModal").classList.add("open");
+}
+
+function closeDonate() {
+  document.getElementById("donateModal").classList.remove("open");
+}
+
+function backdropClose(e) {
+  if (e.target.id === "donateModal") {
+    closeDonate();
+  }
+}
+
+function copyDonate() {
+  navigator.clipboard.writeText(DONATE_TEXT).then(() => {
+    const btn = document.getElementById("copyDonateBtn");
+    btn.innerText = "Copied!";
+    setTimeout(() => { btn.innerText = "Copy Link"; }, 1500);
+  });
+}
+
 function copySample() {
   const text = document.getElementById('sampleCode').innerText;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.querySelector('.copy-btn');
-    btn.textContent = 'Copied!';
-    setTimeout(() => { btn.textContent = 'Copy Code'; }, 1500);
+    btn.innerText = 'Copied!';
+    setTimeout(() => { btn.innerText = 'Copy Code'; }, 1500);
   });
 }
 </script>
