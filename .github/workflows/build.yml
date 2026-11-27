@@ -45,3 +45,41 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: SysCore-macOS.zip
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ zip
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build SysCore
+        run: cmake --build build -j
+
+      - name: Package Linux zip
+        run: |
+          mkdir -p dist
+          cp build/SysCore dist/SysCore
+          if [ -f "Hello world!.sc" ]; then
+            cp "Hello world!.sc" "dist/Hello world!.sc"
+          fi
+          cd dist
+          zip -r ../SysCore-Linux.zip .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SysCore-Linux
+          path: SysCore-Linux.zip
+
+      - name: Attach to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: SysCore-Linux.zip
