@@ -1,0 +1,47 @@
+name: Build SysCore
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+
+      - name: Build SysCore
+        run: cmake --build build -j
+
+      - name: Package macOS zip
+        run: |
+          mkdir -p dist
+          cp build/SysCore dist/SysCore
+          if [ -f "Hello world!.sc" ]; then
+            cp "Hello world!.sc" "dist/Hello world!.sc"
+          fi
+          cd dist
+          zip -r ../SysCore-macOS.zip .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SysCore-macOS
+          path: SysCore-macOS.zip
+
+      - name: Attach to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: SysCore-macOS.zip
